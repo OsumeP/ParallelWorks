@@ -1,0 +1,12 @@
+# Created at 2026-03-09T17:52:40.008
+Invalid maximum heap size: -Xmx4g
+
+# Created at 2026-03-09T17:52:40.008
+The specified size exceeds the maximum representable size.
+
+# Created at 2026-03-09T17:52:40.009
+Error: Could not create the Java Virtual Machine.
+
+# Created at 2026-03-09T17:52:40.009
+Error: A fatal exception has occurred. Program will exit.
+
