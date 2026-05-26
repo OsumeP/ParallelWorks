@@ -1,1 +1,5 @@
 /target/
+
+
+#Ignore cursor AI rules
+.lst
