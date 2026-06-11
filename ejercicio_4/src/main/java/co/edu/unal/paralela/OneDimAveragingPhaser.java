@@ -120,24 +120,37 @@ public final class OneDimAveragingPhaser {
             threads[ii] = new Thread(() -> {
                 double[] threadPrivateMyVal = myVal;
                 double[] threadPrivateMyNew = myNew;
-
+                
+                final int left = i * (n / tasks) + 1;
+                final int right = (i + 1) * (n / tasks);
+                
                 for (int iter = 0; iter < iterations; iter++) {
-                    final int left = i * (n / tasks) + 1;
-                    final int right = (i + 1) * (n / tasks);
-
-                    for (int j = left; j <= right; j++) {
-                        threadPrivateMyNew[j] = (threadPrivateMyVal[j - 1]
+                	final int currentPhase = phs[i].getPhase();
+                    
+                    if (left <= right) {
+                        threadPrivateMyNew[left] = (threadPrivateMyVal[left - 1] 
+                                + threadPrivateMyVal[left + 1]) / 2.0;
+                        
+                        if (left < right) {
+                            threadPrivateMyNew[right] = (threadPrivateMyVal[right - 1] 
+                                    + threadPrivateMyVal[right + 1]) / 2.0;
+                        }
+                    }
+                    
+                    phs[i].arrive();
+                    
+                    for (int j = left + 1; j <= right - 1; j++) {
+                        threadPrivateMyNew[j] = (threadPrivateMyVal[j - 1] 
                                 + threadPrivateMyVal[j + 1]) / 2.0;
                     }
-//                    System.out.println("Arriving task: "+ i);
-                    phs[i].arrive();
+                    
                     if(i-1>=0){
 //                        System.out.println("Arrived task "+ i +" Waiting for "+ (i-1));
-                        phs[i-1].awaitAdvance(1);
+                        phs[i-1].awaitAdvance(currentPhase);
                     }
                     if(i+1<tasks){
 //                        System.out.println("Arrived task "+ i +" Waiting for "+ (i+1));
-                        phs[i+1].awaitAdvance(1);
+                        phs[i+1].awaitAdvance(currentPhase);
                     }
 
                     double[] temp = threadPrivateMyNew;
